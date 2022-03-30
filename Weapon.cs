@@ -73,11 +73,11 @@ public class Weapon : MonoBehaviour
         }
         if(elemental == "None")
         {
-            rewardedWeapon = $"You've been given a {rarity} {weaponName}! Attack: {atk} Critical Hit Chance: {critChance} Range: {range}";
+            rewardedWeapon = $"You've been given a {rarity} {weaponName}! Attack: {atk} Critical Hit Chance: {critChance}% Range: {range}";
         }
         else
         {
-            rewardedWeapon = $"You've been given a {rarity} {weaponName} of {elemental}! Attack: {atk} Critical Hit Chance: {critChance} Range: {range}";
+            rewardedWeapon = $"You've been given a {rarity} {weaponName} of {elemental}! Attack: {atk} Critical Hit Chance: {critChance}% Range: {range}";
         }
 
         return rewardedWeapon;

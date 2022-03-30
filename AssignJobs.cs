@@ -32,7 +32,7 @@ public class AssignJobs : MonoBehaviour
                 thisNPC.title = npcContainer.GetComponent<NPCJobs>().jobTitle[i];
                 thisNPC.color = npcContainer.GetComponent<NPCJobs>().colours[i];
                 thisNPC.weapon = npcContainer.GetComponent<NPCJobs>().weaponPref[i];
-                npc.GetComponent<Renderer>().material.color = thisNPC.color;
+                npc.transform.GetChild(3).gameObject.GetComponent<Renderer>().material.color = thisNPC.color;
         }
     }
 }

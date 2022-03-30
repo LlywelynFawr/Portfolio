@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
     private int i;
     private string targetJob;
     private Weapon reward;
+    public Text text;
+    public GameObject textbox;
+    public Text questList;
  
     public CharacterController controller;
     public float speed = 12f;
@@ -24,27 +28,9 @@ public class PlayerMovement : MonoBehaviour
 
     public float pushPower = 2.0F;
 
-    void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        Rigidbody body = hit.collider.attachedRigidbody;
-
-        // no rigidbody
-        if (body == null || body.isKinematic)
-            return;
-
-        // We dont want to push objects below us
-        if (hit.moveDirection.y < -0.3f)
-            return;
-
-        // Calculate push direction from move direction,
-        // we only push objects to the sides never up and down
-        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-
-        // If you know how fast your character is trying to move,
-        // then you can also multiply the push velocity by that.
-
-        // Apply the push
-        body.velocity = pushDir * pushPower;
+    private void Start() {
+        textbox.SetActive(false);
+        questList.text = "No Current Quest";
     }
 
 
@@ -74,8 +60,8 @@ public class PlayerMovement : MonoBehaviour
         }
         //uses the value for gravity to control how fast the player falls
         velocity.y += gravity * Time.deltaTime;
-
         controller.Move(velocity * Time.deltaTime);
+        closeCanvas();
 
         RaycastHit hit;
 
@@ -92,18 +78,26 @@ public class PlayerMovement : MonoBehaviour
                     {
                         GiveQuest(npc);
                         onQuest = true;
+                        textbox.SetActive(true);
+                        text.text = $"Go and find the {targetJob}";
+                        questList.text = $"Talk to the {targetJob}";
+                        pauseGame();
                     }
                     else
                     {
                         if(npc.title == targetJob)
                         {
-                            Debug.Log($"Quest Complete, you found the {targetJob}");
-                            Debug.Log(reward.GiveWeapon(npc));
+                            textbox.SetActive(true);
+                            text.text = $"Quest Complete, you found the {targetJob},\n{reward.GiveWeapon(npc)}";
+                            questList.text = "No Current Quest";
                             onQuest = false;
+                            pauseGame();
                         }
                         else
                         {
-                            Debug.Log($"You are already on a quest, go find the {targetJob}");
+                           textbox.SetActive(true);
+                           text.text = $"You are already on a quest, go find the {targetJob}";
+                           pauseGame();
                         }
                     }
                 }
@@ -124,7 +118,29 @@ public class PlayerMovement : MonoBehaviour
             i += 1;
             targetJob = GameObject.Find("NPCContainer").GetComponent<NPCJobs>().jobTitle[i];
         }
-        Debug.Log($"Go and find the {targetJob}");
+    }
+
+    void closeCanvas(){
+        if(textbox.activeSelf == true)
+        {
+            if(Input.GetKeyDown(KeyCode.Return))
+            {
+                textbox.SetActive(false);
+                resumeGame();
+            }
+        }
+    }
+
+    void resumeGame()
+    {
+        Time.timeScale = 1;
+        Cursor.visible = false;
+    }
+
+    void pauseGame()
+    {
+        Time.timeScale = 0;
+        Cursor.visible = false;
     }
 }
 
